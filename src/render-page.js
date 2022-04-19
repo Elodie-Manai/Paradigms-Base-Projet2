@@ -1,5 +1,6 @@
 const createChart = require("./graph");
-const { setGraphData, rowHtml } = require("./functions");
+const { setGraphData, rowHtml, addDateProps } = require("./functions");
+const { addLetterToHeros } = require("./superiorFunctions");
 
 /**
  * Génère le rendu de la page.
@@ -24,6 +25,8 @@ function renderPage(data, withGraph) {
         };
       }, {});
 
+      data.map(value => addDateProps(value));
+
     window.chart = createChart("myChart", setGraphData(bruitParHeure), "bruit");
   }
   const table = document.createElement("table");
@@ -38,5 +41,16 @@ function renderPage(data, withGraph) {
   </thead> 
   ${rowHtml(data)}
   </table>`;
+
+  const heros = {
+    "hero": "batman",
+    "hero2": "robin",
+    "hero3": "iron_man",
+    "hero4ever": "deadpool"
+}
+
+  console.log(addLetterToHeros((x) => "A" + x, heros))
+  console.log(addLetterToHeros((x) => "A" + x, heros))
+
 }
 module.exports = renderPage;
