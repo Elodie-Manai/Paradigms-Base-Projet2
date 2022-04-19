@@ -1,9 +1,5 @@
 const createChart = require("./graph");
-const {
-  setNoisePerHour,
-  setGraphData,
-  rowHtml
-} = require("./functions");
+const { setGraphData, rowHtml } = require("./functions");
 
 /**
  * Génère le rendu de la page.
@@ -11,18 +7,26 @@ const {
  * @param {boolean} withGraph Pour les tests
  */
 function renderPage(data, withGraph) {
-  const divTable = document.getElementById('table');
-  divTable.innerHTML = '';
+  const divTable = document.getElementById("table");
+  divTable.innerHTML = "";
   if (withGraph) {
     if (window.chart) window.chart.destroy();
-    const bruitParHeure = {};
 
-    data.filter(({type}) => type === "noise")
-    .map(value => setNoisePerHour(value, bruitParHeure));
-    const graphData = setGraphData(bruitParHeure);
-    window.chart = createChart("myChart", graphData, "bruit");
+    const bruitParHeure = data.filter(({ type }) => type === "noise")
+      .reduce((result, { valeur, timestamp }) => {
+        const heure = new Date(timestamp).toLocaleTimeString("fr");
+        return {
+          ...result,
+          [heure]: [
+            ...(result[heure] === undefined ? [] : result[heure]),
+            valeur,
+          ],
+        };
+      }, {});
+
+    window.chart = createChart("myChart", setGraphData(bruitParHeure), "bruit");
   }
-  const table = document.createElement('table');
+  const table = document.createElement("table");
   divTable.appendChild(table);
   table.innerHTML = `<table>
   <thead>
@@ -34,6 +38,5 @@ function renderPage(data, withGraph) {
   </thead> 
   ${rowHtml(data)}
   </table>`;
-  
 }
 module.exports = renderPage;

@@ -1,17 +1,3 @@
-/**
- * set bruitParHeure[heure] with the mesure given in parameter
- * if bruitParHeure[heure] already has value in it then adds the new value in the array
- * else set the value in the array
- * 
- * @param {*} mesure 
- * @param {*} bruitParHeure 
- * @returns {}
- */
-function setNoisePerHour(mesure, bruitParHeure) {
-    const heure = new Date(mesure.timestamp).toLocaleTimeString("fr");
-    bruitParHeure[heure] ? bruitParHeure[heure].push(mesure.valeur) : bruitParHeure[heure] = [mesure.valeur];
-    return bruitParHeure;
-}
 
 /**
  * set graphData with the bruitParHeure given in parameter
@@ -36,10 +22,11 @@ function setGraphData(bruitParHeure) {
  * @returns string
  */
 function rowHtml(data) {
-    return data.map(value => `<tr data-id="${value.id}">
-        <td>${value.timestamp}</td>
-        <td>${value.type}</td>
-        <td>${value.valeur}</td>
+    console.log(data)
+    return data.map(({id, valeur, timestamp, type}) => `<tr data-id="${id}">
+        <td>${timestamp}</td>
+        <td>${type}</td>
+        <td>${valeur}</td>
     </tr>`).join('');
 }
 
@@ -54,6 +41,28 @@ function average(addition, length) {
     return addition / length;
 }
 
-exports.setNoisePerHour = setNoisePerHour;
 exports.setGraphData = setGraphData;
 exports.rowHtml = rowHtml;
+
+
+// data:
+// [
+//     {
+//       "id": 1,
+//       "valeur": 1.11,
+//       "timestamp": "2022-02-09T08:30:59",
+//       "type": "cod"
+//     },
+//     {
+//       "id": 2,
+//       "valeur": 10,
+//       "timestamp": "2022-02-09T08:30:59",
+//       "type": "temperature"
+//     },
+//     {
+//       "id": 3,
+//       "valeur": 10,
+//       "timestamp": "2022-02-09T08:30:59",
+//       "type": "noise"
+//     }
+//   ]
