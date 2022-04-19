@@ -46,6 +46,7 @@ describe("snapshot", () => {
         <th>valeur</th>
       </tr>
     </thead>
+    <tbody>
     <tr data-id="1">
       <td>2022-02-09T08:30:59</td>
       <td>cod</td>
@@ -61,6 +62,7 @@ describe("snapshot", () => {
       <td>noise</td>
       <td>10</td>
     </tr>
+    </tbody>
   </table>`)
     );
   });

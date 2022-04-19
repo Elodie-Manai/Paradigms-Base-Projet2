@@ -1,4 +1,9 @@
 const createChart = require("./graph");
+const {
+  setNoisePerHour,
+  setGraphData,
+  rowHtml
+} = require("./functions");
 
 /**
  * Génère le rendu de la page.
@@ -6,69 +11,29 @@ const createChart = require("./graph");
  * @param {boolean} withGraph Pour les tests
  */
 function renderPage(data, withGraph) {
-  const divTable = document.getElementById("table");
-  divTable.innerHTML = "";
-
-  if (withGraph && window.chart) {
-    window.chart.destroy();
-  }
-
-  const table = document.createElement("table");
-  divTable.appendChild(table);
-  table.innerHTML = `
-    <thead>
-      <tr>
-        <th>date</th>
-        <th>capteur</th>
-        <th>valeur</th>
-      </tr>
-    </thead>
-    `;
-
-  let bruitParHeure = {};
-
-  for (i = 0; i < data.length; i++) {
-    const mesure = data[i];
-    let tr = document.createElement("tr");
-
-    tr.setAttribute("data-id", mesure.id);
-
-    let dateCell = document.createElement("td");
-    dateCell.innerHTML = mesure.timestamp;
-    tr.appendChild(dateCell);
-
-    let capteurCell = document.createElement("td");
-    capteurCell.innerHTML = mesure.type;
-    tr.appendChild(capteurCell);
-
-    let valeurCell = document.createElement("td");
-    valeurCell.innerHTML = mesure.valeur;
-    tr.appendChild(valeurCell);
-
-    table.appendChild(tr);
-
-    if (withGraph && mesure.type === "noise") {
-      var heure = new Date(mesure.timestamp).toLocaleTimeString("fr");
-      if (bruitParHeure[heure]) {
-        bruitParHeure[heure].push(mesure.valeur);
-      } else {
-        bruitParHeure[heure] = [mesure.valeur];
-      }
-    }
-  }
-
+  const divTable = document.getElementById('table');
+  divTable.innerHTML = '';
   if (withGraph) {
-    var graphData = {};
-    for (const key in bruitParHeure) {
-      const mesures = bruitParHeure[key];
-      let somme = 0;
-      for (i = 0; i < mesures.length; i++) {
-        somme += mesures[i];
-      }
-      graphData[key] = somme / mesures.length;
-    }
+    if (window.chart) window.chart.destroy();
+    const bruitParHeure = {};
 
+    data.filter(({type}) => type === "noise")
+    .map(value => setNoisePerHour(value, bruitParHeure));
+    const graphData = setGraphData(bruitParHeure);
     window.chart = createChart("myChart", graphData, "bruit");
   }
+  const table = document.createElement('table');
+  divTable.appendChild(table);
+  table.innerHTML = `<table>
+  <thead>
+    <tr>
+      <th>date</th>
+      <th>capteur</th>
+      <th>valeur</th>
+    </tr>
+  </thead> 
+  ${rowHtml(data)}
+  </table>`;
+  
 }
 module.exports = renderPage;
