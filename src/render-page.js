@@ -1,6 +1,6 @@
 const createChart = require("./graph");
 const { setGraphData, rowHtml, addDateProps } = require("./functions");
-const { addLetterToHeros } = require("./superiorFunctions");
+const { addLetterToHeros, sum, convertPerso, personnages } = require("./superiorFunctions");
 
 /**
  * Génère le rendu de la page.
@@ -47,6 +47,16 @@ function renderPage(data, withGraph) {
   console.log(addLetterToHeros((x) => "A" + x, "hero"));
   console.log(addLetterToHeros((x) => "B" + x, "bad guy"));
   console.log(addLetterToHeros((x) => "C" + x, "bad girl"));
+
+  console.log(sum(3)()());
+  let sum12 = sum(12);
+  console.log(sum12(10)(10));
+  let sum1212 = sum12(12);
+  console.log(sum1212(4));
+
+
+  console.log(convertPerso(({role})=> role !== 'hero', ({name}) => 'Nice ' + name, personnages));
+  console.log(convertPerso(({role})=> role === 'hero', ({name}) => 'Bad ' + name, personnages));
 
 }
 module.exports = renderPage;
