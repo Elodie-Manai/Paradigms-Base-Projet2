@@ -4,8 +4,7 @@
 
 
 function addLetterToHeros(fn, heros) {
-    herosArray = Object.entries(heros);
-    herosArray = herosArray.map(([key, value]) => {
+    herosArray = Object.entries(heros).map(([key, value]) => {
         return [key, fn(value)];
     });
     return Object.fromEntries(herosArray);

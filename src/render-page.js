@@ -50,7 +50,7 @@ function renderPage(data, withGraph) {
 }
 
   console.log(addLetterToHeros((x) => "A" + x, heros))
-  console.log(addLetterToHeros((x) => "A" + x, heros))
+  console.log(addLetterToHeros((x) => "B" + x, heros))
 
 }
 module.exports = renderPage;
