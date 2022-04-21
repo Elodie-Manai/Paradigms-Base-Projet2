@@ -51,22 +51,29 @@ const filterByRole = (role) => (array) =>
 
 // ------------------- RECURSIVE FUNCTION -------------------
 
-const reduceSuperior = (number) =>
+const reduceSuperiorNumber = (number) =>
   !number ? 0 : number + mapSuperior(number - 1);
 
-const mapSuperior = (fn) => {
-    return ([first, ...rest]) => {
-        if(rest.length === 1) return [fn(first), fn(rest)];
-        return [fn(first), ...mapSuperior(fn)(rest)]
-    };
+const reduceSuperior = (fn) => ([first, ...rest], i = 0) => {
+    if (rest.length === 1) return fn(first, ...rest);
+    return fn(first, i) + reduceSuperior(fn)(rest, fn(first, i));
 };
 
-const filterSuperior = (fn) => {
-    return ([first, ...rest]) => {
-        if(rest.length === 1) return fn(rest) === 0 ? [first, ...rest] : [first];
-        return fn(first) === 0 ? [first, ...filterSuperior(fn)(rest)] : [...filterSuperior(fn)(rest)];
-    };
-};
+const mapSuperior =
+  (fn) =>
+  ([first, ...rest]) => {
+    if (rest.length === 1) return [fn(first), fn(rest)];
+    return [fn(first), ...mapSuperior(fn)(rest)];
+  };
+
+const filterSuperior =
+  (fn) =>
+  ([first, ...rest]) => {
+    if (rest.length === 1) return fn(rest) === 0 ? [first, ...rest] : [first];
+    return fn(first) === 0
+      ? [first, ...filterSuperior(fn)(rest)]
+      : [...filterSuperior(fn)(rest)];
+  };
 
 exports.sum = sum;
 exports.addLetterToHeros = addLetterToHeros;
