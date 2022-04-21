@@ -13,7 +13,8 @@ function renderPage(data, withGraph) {
   if (withGraph) {
     if (window.chart) window.chart.destroy();
 
-    const bruitParHeure = data.filter(({ type }) => type === "noise")
+    const bruitParHeure = data
+      .filter(({ type }) => type === "noise")
       .reduce((result, { valeur, timestamp }) => {
         const heure = new Date(timestamp).toLocaleTimeString("fr");
         return {
@@ -25,7 +26,7 @@ function renderPage(data, withGraph) {
         };
       }, {});
 
-      data.map(value => addDateProps(value));
+    data.map((value) => addDateProps(value));
 
     window.chart = createChart("myChart", setGraphData(bruitParHeure), "bruit");
   }
@@ -42,15 +43,10 @@ function renderPage(data, withGraph) {
   ${rowHtml(data)}
   </table>`;
 
-  const heros = {
-    "hero": "batman",
-    "hero2": "robin",
-    "hero3": "iron_man",
-    "hero4ever": "deadpool"
-}
 
-  console.log(addLetterToHeros((x) => "A" + x, heros))
-  console.log(addLetterToHeros((x) => "B" + x, heros))
+  console.log(addLetterToHeros((x) => "A" + x, "hero"));
+  console.log(addLetterToHeros((x) => "B" + x, "bad guy"));
+  console.log(addLetterToHeros((x) => "C" + x, "bad girl"));
 
 }
 module.exports = renderPage;
