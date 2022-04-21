@@ -1,7 +1,12 @@
 const createChart = require("./graph");
 const { setGraphData, rowHtml, addDateProps } = require("./functions");
-const { addLetterToHeros, sum, convertPerso } = require("./superiorFunctions");
+const { addLetterToHeros, sum, convertPerso, mapSuperior, filterSuperior } = require("./superiorFunctions");
 const { personnages } = require('./personnages');
+
+Array.prototype.group = (fn) => {
+  return fn
+};
+Array.prototype.by = (fn) => fn;
 /**
  * Génère le rendu de la page.
  * @param {import("../types").Mesure[]} data
@@ -55,11 +60,14 @@ function renderPage(data, withGraph) {
   console.log(sum1212(4));
 
 
-  // console.log(convertPerso(({role})=> role !== 'hero', ({name}) => 'Nice ' + name)(personnages));
-  // console.log(convertPerso(({role})=> role === 'hero', ({name}) => 'Bad ' + name)(personnages));
   console.log(personnages.map(convertPerso(({role}) => role === "hero", ({name}) => "Bad " + name)));
   console.log(personnages.map(convertPerso(({role}) => role !== "hero", ({name}) => "Nice " + name)));
 
+  console.log(mapSuperior(x => x * 2)([3, 8, 10]));
+  console.log(mapSuperior(x => x * 2)([12, 15, 25]));
+  console.log(filterSuperior(x => x % 2)([3, 8, 10]));
+
+  // console.log(personnages.group(perso => perso.universe === "DC"))
 
 }
 module.exports = renderPage;
