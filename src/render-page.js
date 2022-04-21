@@ -1,7 +1,7 @@
 const createChart = require("./graph");
 const { setGraphData, rowHtml, addDateProps } = require("./functions");
-const { addLetterToHeros, sum, convertPerso, personnages } = require("./superiorFunctions");
-
+const { addLetterToHeros, sum, convertPerso } = require("./superiorFunctions");
+const { personnages } = require('./personnages');
 /**
  * Génère le rendu de la page.
  * @param {import("../types").Mesure[]} data
@@ -44,9 +44,9 @@ function renderPage(data, withGraph) {
   </table>`;
 
 
-  console.log(addLetterToHeros((x) => "A" + x, "hero"));
-  console.log(addLetterToHeros((x) => "B" + x, "bad guy"));
-  console.log(addLetterToHeros((x) => "C" + x, "bad girl"));
+  console.log(addLetterToHeros((x) => "A" + x)("hero")(personnages));
+  console.log(addLetterToHeros((x) => "B" + x)("bad guy")(personnages));
+  console.log(addLetterToHeros((x) => "C" + x)("bad girl")(personnages));
 
   console.log(sum(3)()());
   let sum12 = sum(12);
@@ -55,8 +55,11 @@ function renderPage(data, withGraph) {
   console.log(sum1212(4));
 
 
-  console.log(convertPerso(({role})=> role !== 'hero', ({name}) => 'Nice ' + name, personnages));
-  console.log(convertPerso(({role})=> role === 'hero', ({name}) => 'Bad ' + name, personnages));
+  // console.log(convertPerso(({role})=> role !== 'hero', ({name}) => 'Nice ' + name)(personnages));
+  // console.log(convertPerso(({role})=> role === 'hero', ({name}) => 'Bad ' + name)(personnages));
+  console.log(personnages.map(convertPerso(({role}) => role === "hero", ({name}) => "Bad " + name)));
+  console.log(personnages.map(convertPerso(({role}) => role !== "hero", ({name}) => "Nice " + name)));
+
 
 }
 module.exports = renderPage;
