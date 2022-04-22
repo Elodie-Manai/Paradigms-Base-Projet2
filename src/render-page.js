@@ -76,8 +76,8 @@ function renderPage(data, withGraph) {
   // console.log(personnages.map(convertPerso(({role}) => role !== "hero", ({name}) => "Nice " + name)));
 
   console.log('reduceSuperior', reduceSuperior((x, y) => x + y)([3, 8, 10]));
-  // console.log(mapSuperior(x => x * 2)([12, 15, 25]));
-  // console.log(filterSuperior(x => x % 2)([3, 8, 10]));
+  console.log('mapSuperior', mapSuperior(x => x * 2)([12, 15, 25]));
+  console.log('filterSuperior', filterSuperior(x => x % 2 !== 0)([3, 8, 10]));
 
   // console.log(personnages.group(perso => perso.universe === "DC"))
 

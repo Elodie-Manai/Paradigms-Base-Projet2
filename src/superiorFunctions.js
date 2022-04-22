@@ -55,24 +55,26 @@ const reduceSuperiorNumber = (number) =>
   !number ? 0 : number + mapSuperior(number - 1);
 
 const reduceSuperior = (fn) => ([first, ...rest], i = 0) => {
-    if (rest.length === 1) return fn(first, ...rest);
-    return fn(first, i) + reduceSuperior(fn)(rest, fn(first, i));
+  return (first && reduceSuperior(fn)(rest, fn(first, i))) || [i];
+  // before
+  // return (rest.length === 1) ? fn(first, ...rest) : fn(first, i) + reduceSuperior(fn)(rest, fn(first, i));
 };
 
-const mapSuperior =
-  (fn) =>
-  ([first, ...rest]) => {
-    if (rest.length === 1) return [fn(first), fn(rest)];
-    return [fn(first), ...mapSuperior(fn)(rest)];
+const mapSuperior = (fn) => ([first, ...rest]) => {
+    return (first && [fn(first), ...mapSuperior(fn)(rest)]) || [];
+
+    // before
+    // return (rest.length === 1) ? [fn(first), fn(rest)] : [fn(first), ...mapSuperior(fn)(rest)];
   };
 
-const filterSuperior =
-  (fn) =>
-  ([first, ...rest]) => {
-    if (rest.length === 1) return fn(rest) === 0 ? [first, ...rest] : [first];
-    return fn(first) === 0
-      ? [first, ...filterSuperior(fn)(rest)]
-      : [...filterSuperior(fn)(rest)];
+const filterSuperior = (fn) => ([first, ...rest]) => {
+    return (first && (fn(first) ? [first, ...filterSuperior(fn)(rest)] : [...filterSuperior(fn)(rest)])) || [];
+    
+    // before
+    // if (rest.length === 1) return fn(rest) === 0 ? [first, ...rest] : [first];
+    // return fn(first) === 0
+    //   ? [first, ...filterSuperior(fn)(rest)]
+    //   : [...filterSuperior(fn)(rest)];
   };
 
 exports.sum = sum;
