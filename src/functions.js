@@ -23,6 +23,7 @@ function setGraphData(bruitParHeure) {
  * @returns string
  */
 function rowHtml(data) {
+    console.log(data)
     const keys = Object.keys(data);
     return keys.map(key => data[key].map(({id, valeur, timestamp}) => {
         const dateBeautified = addDateProps(timestamp);
@@ -33,10 +34,6 @@ function rowHtml(data) {
     </tr>`}).join('')).join('');
 }
 
-function addTypeAndReduce(data, mesuresUrlArray) {
-    const keys = Object.keys(mesuresUrlArray)
-
-}
 
 /**
  * take an addition and an array length as parameters and return average value
@@ -75,7 +72,6 @@ function addDateProps(timestamp) {
 exports.setGraphData = setGraphData;
 exports.rowHtml = rowHtml;
 exports.addDateProps = addDateProps;
-exports.addTypeAndReduce = addTypeAndReduce;
 
 // data:
 // [

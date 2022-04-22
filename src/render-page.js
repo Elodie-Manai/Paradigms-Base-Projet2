@@ -1,8 +1,6 @@
 const createChart = require("./graph");
 const { setGraphData, rowHtml, addDateProps } = require("./functions");
-const {
-  addLetterToHeros,
-  sum,
+const { sum,
   convertPerso,
   mapSuperior,
   filterSuperior,
@@ -23,22 +21,22 @@ async function renderTable(mesuresUrlArray) {
   const noise$ = await fetchData(mesuresUrlArray.noise);
 
   combineLatest([cod$, temperature$, noise$]).pipe( map(([cod$, temperature$, noise$]) => ({cod: cod$, temperature: temperature$, noise: noise$})))
-  .subscribe(data => {
-    const divTable = document.getElementById("table");
-    divTable.innerHTML = "";
-    const table = document.createElement("table");
-    divTable.appendChild(table);
-    table.innerHTML = `<table>
-    <thead>
-      <tr>
-        <th>date</th>
-        <th>capteur</th>
-        <th>valeur</th>
-      </tr>
-    </thead> 
-    ${rowHtml(data)}
-    </table>`;
-  })
+    .subscribe(data => {
+      const divTable = document.getElementById("table");
+      divTable.innerHTML = "";
+      const table = document.createElement("table");
+      divTable.appendChild(table);
+      table.innerHTML = `<table>
+      <thead>
+        <tr>
+          <th>date</th>
+          <th>capteur</th>
+          <th>valeur</th>
+        </tr>
+      </thead> 
+      ${rowHtml(data)}
+      </table>`;
+    })
 }
 
 async function renderGraph(mesuresUrlArray) {

@@ -9,10 +9,18 @@ const mesuresUrl = {
   noise: '/api/noise.json'
 }
 
+const mesureUrl = {
+  noise: 'http://localhost:1234/noise/0'
+}
+
 
 document.addEventListener('DOMContentLoaded', async function () {
   renderTable(mesuresUrl);
   renderGraph(mesuresUrl);
+
+  const data$ = await fetchData(mesureUrl.noise);
+
+  data$.subscribe((data) => console.log('1234', data))
 });
 
 // async function update() {
