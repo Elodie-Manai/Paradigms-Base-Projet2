@@ -1,12 +1,47 @@
 const createChart = require("./graph");
 const { setGraphData, rowHtml, addDateProps } = require("./functions");
-const { addLetterToHeros, sum, convertPerso, mapSuperior, filterSuperior, reduceSuperior } = require("./superiorFunctions");
-const { personnages } = require('./personnages');
+const {
+  addLetterToHeros,
+  sum,
+  convertPerso,
+  mapSuperior,
+  filterSuperior,
+  reduceSuperior,
+  verifyPersoRole,
+} = require("./superiorFunctions");
+const { personnages } = require("./personnages");
+const _ = require("lodash/fp");
 
-Array.prototype.group = (fn) => {
-  return fn
-};
-Array.prototype.by = (fn) => fn;
+function renderTable(data) {
+  const divTable = document.getElementById("table");
+  divTable.innerHTML = "";
+  const table = document.createElement("table");
+  divTable.appendChild(table);
+  table.innerHTML = `<table>
+  <thead>
+    <tr>
+      <th>date</th>
+      <th>capteur</th>
+      <th>valeur</th>
+    </tr>
+  </thead> 
+  ${rowHtml(data)}
+  </table>`;
+}
+
+function renderGraph(data) {
+  if (window.chart) window.chart.destroy();
+  let bruitParHeure = filterSuperior(({ type }) => type === "noise")(data);
+  bruitParHeure = bruitParHeure.reduce((result, { valeur, timestamp }) => {
+    const heure = new Date(timestamp).toLocaleTimeString("fr");
+    return {
+      ...result,
+      [heure]: [...(result[heure] === undefined ? [] : result[heure]), valeur],
+    };
+  }, {});
+  window.chart = createChart("myChart", setGraphData(bruitParHeure), "bruit");
+}
+
 /**
  * Génère le rendu de la page.
  * @param {import("../types").Mesure[]} data
@@ -17,7 +52,7 @@ function renderPage(data, withGraph) {
   divTable.innerHTML = "";
   if (withGraph) {
     if (window.chart) window.chart.destroy();
-    let bruitParHeure = filterSuperior(({ type }) => type === "noise")(data)
+    let bruitParHeure = filterSuperior(({ type }) => type === "noise")(data);
     bruitParHeure = bruitParHeure.reduce((result, { valeur, timestamp }) => {
       const heure = new Date(timestamp).toLocaleTimeString("fr");
       return {
@@ -27,7 +62,7 @@ function renderPage(data, withGraph) {
           valeur,
         ],
       };
-    }, {})
+    }, {});
 
     // const bruitParHeure = data
     //   .filter(({ type }) => type === "noise")
@@ -60,7 +95,6 @@ function renderPage(data, withGraph) {
   ${rowHtml(data)}
   </table>`;
 
-
   // console.log(addLetterToHeros((x) => "A" + x)("hero")(personnages));
   // console.log(addLetterToHeros((x) => "B" + x)("bad guy")(personnages));
   // console.log(addLetterToHeros((x) => "C" + x)("bad girl")(personnages));
@@ -71,15 +105,15 @@ function renderPage(data, withGraph) {
   let sum1212 = sum12(12);
   // console.log(sum1212(4));
 
-
   // console.log(personnages.map(convertPerso(({role}) => role === "hero", ({name}) => "Bad " + name)));
   // console.log(personnages.map(convertPerso(({role}) => role !== "hero", ({name}) => "Nice " + name)));
 
-  console.log('reduceSuperior', reduceSuperior((x, y) => x + y)([3, 8, 10]));
-  console.log('mapSuperior', mapSuperior(x => x * 2)([12, 15, 25]));
-  console.log('filterSuperior', filterSuperior(x => x % 2 !== 0)([3, 8, 10]));
+  // console.log('reduceSuperior', reduceSuperior((x, y) => x + y)([3, 8, 10]));
+  // console.log('mapSuperior', mapSuperior(x => x * 2)([12, 15, 25]));
+  // console.log('filterSuperior', filterSuperior(x => x % 2 !== 0)([3, 8, 10]));
 
   // console.log(personnages.group(perso => perso.universe === "DC"))
-
 }
-module.exports = renderPage;
+exports.renderPage = renderPage;
+exports.renderGraph = renderGraph;
+exports.renderTable = renderTable;

@@ -1,4 +1,5 @@
 const { personnages } = require("./personnages");
+const _ = require('lodash/fp');
 
 //const res = mapValue(x => "a" +x, data)
 
@@ -28,6 +29,7 @@ const sum =
     number1 + number2 + number3;
 
 const verifyPersoRole = (role, perso) => perso.role === role;
+
 
 // function verifyPersoRole(role, perso) {
 //     return perso.role === role;
@@ -83,3 +85,4 @@ exports.convertPerso = convertPerso;
 exports.reduceSuperior = reduceSuperior;
 exports.mapSuperior = mapSuperior;
 exports.filterSuperior = filterSuperior;
+exports.verifyPersoRole = verifyPersoRole
