@@ -8,6 +8,7 @@
 function setGraphData(bruitParHeure) {
     const graphData = {};
     const keys = Object.keys(bruitParHeure);
+    console.log(keys)
     keys.map((key) => {
         const sommeMesures = bruitParHeure[key].reduce((result, item) => result + item);
         graphData[key] = average(sommeMesures, bruitParHeure[key].length);
@@ -22,11 +23,19 @@ function setGraphData(bruitParHeure) {
  * @returns string
  */
 function rowHtml(data) {
-    return data.map(({id, valeur, timestamp, type}) => `<tr data-id="${id}">
-        <td>${timestamp}</td>
-        <td>${type}</td>
+    const keys = Object.keys(data);
+    return keys.map(key => data[key].map(({id, valeur, timestamp}) => {
+        const dateBeautified = addDateProps(timestamp);
+        return `<tr data-id="${id}">
+        <td>${dateBeautified}</td>
+        <td>${key}</td>
         <td>${valeur}</td>
-    </tr>`).join('');
+    </tr>`}).join('')).join('');
+}
+
+function addTypeAndReduce(data, mesuresUrlArray) {
+    const keys = Object.keys(mesuresUrlArray)
+
 }
 
 /**
@@ -46,7 +55,7 @@ function average(addition, length) {
  * @param {*} mesure 
  * @returns {}
  */
-function addDateProps({timestamp}) {
+function addDateProps(timestamp) {
     const date = new Date(timestamp);
     const [frDate, day, month, year, time] = [
         date.toLocaleDateString("fr"),
@@ -55,7 +64,8 @@ function addDateProps({timestamp}) {
         date.getFullYear(),
         date.toLocaleTimeString('fr')
     ]
-    return {
+    return `le ${frDate} à ${time}`
+    {
         frDate, day, month, year, time
     };
 }
@@ -65,7 +75,7 @@ function addDateProps({timestamp}) {
 exports.setGraphData = setGraphData;
 exports.rowHtml = rowHtml;
 exports.addDateProps = addDateProps;
-
+exports.addTypeAndReduce = addTypeAndReduce;
 
 // data:
 // [

@@ -11,35 +11,49 @@ const {
 } = require("./superiorFunctions");
 const { personnages } = require("./personnages");
 const _ = require("lodash/fp");
+const fetchData = require("./fetch-data");
+const { combineLatest, map } = require("rxjs");
 
-function renderTable(data) {
-  const divTable = document.getElementById("table");
-  divTable.innerHTML = "";
-  const table = document.createElement("table");
-  divTable.appendChild(table);
-  table.innerHTML = `<table>
-  <thead>
-    <tr>
-      <th>date</th>
-      <th>capteur</th>
-      <th>valeur</th>
-    </tr>
-  </thead> 
-  ${rowHtml(data)}
-  </table>`;
+
+
+
+async function renderTable(mesuresUrlArray) {
+  const cod$ = await fetchData(mesuresUrlArray.cod);
+  const temperature$ = await fetchData(mesuresUrlArray.temperature);
+  const noise$ = await fetchData(mesuresUrlArray.noise);
+
+  combineLatest([cod$, temperature$, noise$]).pipe( map(([cod$, temperature$, noise$]) => ({cod: cod$, temperature: temperature$, noise: noise$})))
+  .subscribe(data => {
+    const divTable = document.getElementById("table");
+    divTable.innerHTML = "";
+    const table = document.createElement("table");
+    divTable.appendChild(table);
+    table.innerHTML = `<table>
+    <thead>
+      <tr>
+        <th>date</th>
+        <th>capteur</th>
+        <th>valeur</th>
+      </tr>
+    </thead> 
+    ${rowHtml(data)}
+    </table>`;
+  })
 }
 
-function renderGraph(data) {
+async function renderGraph(mesuresUrlArray) {
   if (window.chart) window.chart.destroy();
-  let bruitParHeure = filterSuperior(({ type }) => type === "noise")(data);
-  bruitParHeure = bruitParHeure.reduce((result, { valeur, timestamp }) => {
-    const heure = new Date(timestamp).toLocaleTimeString("fr");
-    return {
-      ...result,
-      [heure]: [...(result[heure] === undefined ? [] : result[heure]), valeur],
-    };
-  }, {});
-  window.chart = createChart("myChart", setGraphData(bruitParHeure), "bruit");
+  const data$ = await fetchData(mesuresUrlArray.noise);
+  data$.subscribe({next: response => {
+    response = response.reduce((result, { valeur, timestamp }) => {
+      const heure = new Date(timestamp).toLocaleTimeString("fr");
+      return {
+        ...result,
+        [heure]: [...(result[heure] === undefined ? [] : result[heure]), valeur],
+      };
+    }, {});
+    window.chart = createChart("myChart", setGraphData(response), "bruit");
+  }});
 }
 
 /**
